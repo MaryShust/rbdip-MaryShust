@@ -8,11 +8,9 @@ import org.springframework.data.repository.query.Param;
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Query("select c from Customer c"
-            + " where c.fullName = :fullName"
-            + " and c.address is not distinct from :address"
-            + " and c.phone is not distinct from :phone")
-    List<Customer> findMatching(
-            @Param("fullName") String fullName,
-            @Param("address") String address,
-            @Param("phone") String phone);
+            + " where c.firstName = :#{#lookup.firstName}"
+            + " and c.lastName = :#{#lookup.lastName}"
+            + " and c.address is not distinct from :#{#lookup.address}"
+            + " and c.phone is not distinct from :#{#lookup.phone}")
+    List<Customer> findMatching(@Param("lookup") CustomerLookup lookup);
 }

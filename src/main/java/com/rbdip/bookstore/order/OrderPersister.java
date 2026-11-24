@@ -1,6 +1,9 @@
 package com.rbdip.bookstore.order;
 
 import com.rbdip.bookstore.customer.Customer;
+import com.rbdip.bookstore.customer.CustomerLookup;
+import com.rbdip.bookstore.customer.CustomerName;
+import com.rbdip.bookstore.customer.CustomerName.CustomerNameParts;
 import com.rbdip.bookstore.customer.CustomerRepository;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -34,12 +37,14 @@ public class OrderPersister {
     }
 
     private Customer resolveCustomer(CreateOrderRequest request) {
-        List<Customer> existing = customerRepository.findMatching(
-                request.customerFullName(), request.customerAddress(), request.customerPhone());
+        CustomerNameParts name = CustomerName.split(request.customerFullName());
+        CustomerLookup lookup = new CustomerLookup(
+                name.firstName(), name.lastName(), request.customerAddress(), request.customerPhone());
+        List<Customer> existing = customerRepository.findMatching(lookup);
         if (!existing.isEmpty()) {
             return existing.get(0);
         }
         return customerRepository.save(new Customer(
-                request.customerFullName(), request.customerAddress(), request.customerPhone()));
+                lookup.firstName(), lookup.lastName(), lookup.address(), lookup.phone()));
     }
 }
