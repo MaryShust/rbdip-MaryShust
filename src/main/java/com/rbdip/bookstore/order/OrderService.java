@@ -34,7 +34,7 @@ public class OrderService {
         BigDecimal total = pricingCalculator.calculateOrderTotal(
                 toPricingItems(lines), customerType(request), request.couponCode());
         Order order = persister.persist(request, lines);
-        notifier.orderPlaced(order, total);
+        notifier.orderPlaced(request.customerFullName(), order.getId(), total);
         return order;
     }
 

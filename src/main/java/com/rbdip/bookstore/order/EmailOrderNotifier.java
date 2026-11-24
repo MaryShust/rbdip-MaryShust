@@ -11,10 +11,10 @@ public class EmailOrderNotifier implements OrderNotifier {
     private static final Logger LOG = LoggerFactory.getLogger(EmailOrderNotifier.class);
 
     @Override
-    public void orderPlaced(Order order, BigDecimal total) {
+    public void orderPlaced(String customerFullName, Long orderId, BigDecimal total) {
         if (LOG.isInfoEnabled()) {
             LOG.info("[email] Dear {}, your order #{} for {} has been placed.",
-                    order.getCustomerFullName(), order.getId(), total);
+                    customerFullName, orderId, total);
         }
     }
 }

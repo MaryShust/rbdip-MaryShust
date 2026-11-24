@@ -9,10 +9,8 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 
 /**
- * Намеренно денормализованная сущность: хранит "сырые" контактные данные
- * клиента прямо в заказе вместо ссылки на отдельную таблицу customers.
- * Это цель для нормализации схемы в ЛР2, а поле customerFullName - цель
- * expand-contract миграции в ЛР3 (разбить на firstName/lastName).
+ * Заказ ссылается на нормализованную таблицу customers по customer_id.
+ * Данные клиента больше не дублируются в orders.
  */
 @Entity
 @Table(name = "orders")
@@ -22,14 +20,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "customer_full_name", nullable = false)
-    private String customerFullName;
-
-    @Column(name = "customer_address")
-    private String customerAddress;
-
-    @Column(name = "customer_phone")
-    private String customerPhone;
+    @Column(name = "customer_id", nullable = false)
+    private Long customerId;
 
     @Column(nullable = false)
     private String status;
@@ -41,10 +33,8 @@ public class Order {
         // for JPA
     }
 
-    public Order(String customerFullName, String customerAddress, String customerPhone, String status) {
-        this.customerFullName = customerFullName;
-        this.customerAddress = customerAddress;
-        this.customerPhone = customerPhone;
+    public Order(Long customerId, String status) {
+        this.customerId = customerId;
         this.status = status;
     }
 
@@ -52,16 +42,8 @@ public class Order {
         return id;
     }
 
-    public String getCustomerFullName() {
-        return customerFullName;
-    }
-
-    public String getCustomerAddress() {
-        return customerAddress;
-    }
-
-    public String getCustomerPhone() {
-        return customerPhone;
+    public Long getCustomerId() {
+        return customerId;
     }
 
     public String getStatus() {

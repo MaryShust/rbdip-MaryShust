@@ -4,5 +4,5 @@ import java.math.BigDecimal;
 
 public interface OrderNotifier {
 
-    void orderPlaced(Order order, BigDecimal total);
+    void orderPlaced(String customerFullName, Long orderId, BigDecimal total);
 }
